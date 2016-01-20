@@ -1,0 +1,40 @@
+/* Abby"s Rainbow Words */
+
+[
+	{
+		"color" : "red",
+		"words" : [ "a","the","see","and","I","is","here","an" ]
+	},
+	{
+		"color" : "orange",
+		"words" : [ "we","he","she","big","have","it","small","no" ]
+	},
+	{
+		"color" : "yellow",
+		"words" : [ "are","down","has","who","do","up","go","this" ]
+	},
+	{
+		"color" : "green",
+		"words" : [ "did","am","get","red","to","me","my","not" ]
+	},
+	{
+		"color" : "blue",
+		"words" : [ "too","like","at","you","can","what","on","in" ]
+	},
+	{
+		"color" : "purple",
+		"words" : [ "so","ran","with","be","look","must","had","into","" ]
+	},
+	{
+		"color" : "pink",
+		"words" : [ "for","said","eat","jump","all","run","play","help" ]
+	},
+	{
+		"color" : "gray",
+		"words" : [ "yes","out","now","green","her","our","new","yellow" ]
+	},
+	{
+		"color" : "white",
+		"words" : [ "then","of","that","they","want","two","buy","ate" ]
+	}
+]
