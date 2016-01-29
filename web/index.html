@@ -1,6 +1,18 @@
 <html>
   <head>
     <title>Abby's Rainbow Words</title>
+    <!--
+      - Polymer Stuff
+      -->
+    <!-- 1. Load webcomponents-lite.min.js for polyfill support. -->
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <!-- 2. Use an HTML Import to bring in some elements. -->
+    <link rel="import" href="bower_components/paper-button/paper-button.html">
+    <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+
+    <!--
+      - Angular Stuff
+      -->
     <!-- 1. Load libraries -->
     <!-- IE required polyfills, in this exact order -->
     <!--
@@ -29,6 +41,8 @@
       System.import('app/boot')
             .then(null, console.error.bind(console));
     </script>
+    
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One|Muli|Josefin+Sans|Quicksand|Questrial' rel='stylesheet' type='text/css'>
   </head>
   <!-- 3. Display the application -->
   <body>
