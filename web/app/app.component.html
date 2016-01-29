@@ -29,29 +29,29 @@
 
 <table width="100%" [hidden]="!words">
     <tr>
-        <td colspan="2" class="prevButtonCell">
+        <td colspan="4" width="100%" class="theWordCell" [style.backgroundColor]="currentColor">
+            <h1 class="theWord">{{currentWord}}</h1>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" class="buttonCell prevButtonCell">
             <paper-button raised (click)="onPrev()" [disabled]="!hasPrev">
                 <iron-icon icon="icons:arrow-back"></iron-icon>
             </paper-button>
         </td>
-        <td colspan="2" width="100%" class="theWordCell" [style.backgroundColor]="currentColor">
-            <h1 class="theWord">{{currentWord}}</h1>
-        </td>
-        <td colspan="2" class="nextButtonCell">
-            <paper-button raised (click)="onNext()" [disabled]="!hasNext">
-                <iron-icon icon="icons:arrow-forward"></iron-icon>
-            </paper-button>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="3" class="hearButtonCell">
+        <td colspan="1" class="buttonCell hearButtonCell">
             <paper-button raised (click)="onHear()" [disabled]="!currentWord">
                 <iron-icon icon="av:hearing"></iron-icon>
             </paper-button>
         </td>
-        <td colspan="3" class="talkButtonCell">
+        <td colspan="1" class="buttonCell talkButtonCell">
             <paper-button raised (click)="onTalk()" [disabled]="currentWord">
                 <iron-icon icon="av:mic"></iron-icon>
+            </paper-button>
+        </td>
+        <td colspan="1" class="buttonCell nextButtonCell">
+            <paper-button raised (click)="onNext()" [disabled]="!hasNext">
+                <iron-icon icon="icons:arrow-forward"></iron-icon>
             </paper-button>
         </td>
     </tr>
