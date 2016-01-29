@@ -1,0 +1,34 @@
+<div style="float: right">
+<iron-icon icon="menu"></iron-icon>
+</div>
+<h3>{{title}}</h3>
+
+<!--
+    <ul>
+        <li>Randomize</li>
+        <li>Hide Color</li>
+        <li>Repeat</li>
+    </ul>
+  -->
+
+<div class="pleaseWait" [hidden]="words">
+    (please wait, loading your words...)
+</div>
+
+<table width="100%" [hidden]="!words">
+    <tr>
+        <td class="prevButtonCell">
+            <paper-button raised (click)="onPrev()" [disabled]="!hasPrev">
+                <iron-icon icon="icons:arrow-back"></iron-icon>
+            </paper-button>
+        </td>
+        <td width="100%" class="theWordCell" [style.backgroundColor]="currentColor">
+            <h1 class="theWord">{{currentWord}}</h1>
+        </td>
+        <td class="nextButtonCell">
+            <paper-button raised (click)="onNext()" [disabled]="!hasNext">
+                <iron-icon icon="icons:arrow-forward"></iron-icon>
+            </paper-button>
+        </td>
+    </tr>
+</table>
