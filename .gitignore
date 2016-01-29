@@ -81,4 +81,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 *.map
-*.js
+
+## BEK:  Need to check in JS files!
+#*.js

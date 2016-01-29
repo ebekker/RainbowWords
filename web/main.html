@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+            <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+            <link rel="import" href="proto-element.html">
+            <style>
+            h1 {
+                font-size: 20pt;
+            }
+            .mainArea {
+                width: 100%;
+                height: 100%;
+                border: solid 1px black;
+            }
+            .prevButton {
+                float:left;
+            }
+            .nextButton {
+                float:right;
+            }
+            .button {
+                width: 50px;
+                vertical-align: middle;
+                text-align: center;
+                height: 100%;
+                border: solid 1px black;
+            }
+            .theWord {
+                text-align: center;
+                font-size: 24pt;
+                margin-left: 50px;
+                margin-right: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1>Abby's Rainbow Words</h1>
+            <div class="mainArea">
+                <div class="prevButton button"><a class="btn" href="#">&lt</a></div>
+                <div class="nextButton button"><a class="btn" href="#">&gt</a></div>
+                <div class="theWord"   style="background-color: red">WORD</div>
+            </div>
+        </div>
+        
+        <proto-element></proto-element>
+    </body>
+</html>
