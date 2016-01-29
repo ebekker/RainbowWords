@@ -70,6 +70,25 @@ System.register(['angular2/core', './words.service'], function(exports_1) {
                         this.refreshState();
                     }
                 };
+                AppComponent.prototype.onHear = function () {
+                    // var msg = new SpeechSynthesisUtterance(this.currentWord);
+                    // window.speechSynthesis.speak(msg);
+                    var msg = new SpeechSynthesisUtterance();
+                    var voices = window.speechSynthesis.getVoices();
+                    msg.voice = voices[2]; //voices[10]; // Note: some voices don't support altering params
+                    msg.voiceURI = 'native';
+                    msg.volume = 1; // 0 to 1
+                    msg.rate = 0.5; // 0.1 to 10
+                    msg.pitch = 1; //0 to 2
+                    msg.text = this.currentWord;
+                    msg.lang = 'en-US';
+                    // msg.onend = function(e) {
+                    // console.log('Finished in ' + event.elapsedTime + ' seconds.');
+                    // };
+                    speechSynthesis.speak(msg);
+                };
+                AppComponent.prototype.onTalk = function () {
+                };
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: 'my-app',
