@@ -19,3 +19,7 @@
 .theWordCell {
     text-align: center;
 }
+
+.hearButtonCell, .talkButtonCell {
+    text-align: center;
+}

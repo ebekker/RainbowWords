@@ -29,18 +29,50 @@
 
 <table width="100%" [hidden]="!words">
     <tr>
-        <td class="prevButtonCell">
+        <td colspan="2" class="prevButtonCell">
             <paper-button raised (click)="onPrev()" [disabled]="!hasPrev">
                 <iron-icon icon="icons:arrow-back"></iron-icon>
             </paper-button>
         </td>
-        <td width="100%" class="theWordCell" [style.backgroundColor]="currentColor">
+        <td colspan="2" width="100%" class="theWordCell" [style.backgroundColor]="currentColor">
             <h1 class="theWord">{{currentWord}}</h1>
         </td>
-        <td class="nextButtonCell">
+        <td colspan="2" class="nextButtonCell">
             <paper-button raised (click)="onNext()" [disabled]="!hasNext">
                 <iron-icon icon="icons:arrow-forward"></iron-icon>
             </paper-button>
         </td>
     </tr>
+    <tr>
+        <td colspan="3" class="hearButtonCell">
+            <paper-button raised (click)="onHear()" [disabled]="!currentWord">
+                <iron-icon icon="av:hearing"></iron-icon>
+            </paper-button>
+        </td>
+        <td colspan="3" class="talkButtonCell">
+            <paper-button raised (click)="onTalk()" [disabled]="currentWord">
+                <iron-icon icon="av:mic"></iron-icon>
+            </paper-button>
+        </td>
+    </tr>
+
+<!--
+        <script>
+            var msg = new SpeechSynthesisUtterance();
+            var voices = window.speechSynthesis.getVoices();
+            msg.voice = voices[10]; // Note: some voices don't support altering params
+            msg.voiceURI = 'native';
+            msg.volume = 1; // 0 to 1
+            msg.rate = 1; // 0.1 to 10
+            msg.pitch = 2; //0 to 2
+            msg.text = 'Hello World';
+            msg.lang = 'en-US';
+
+            msg.onend = function(e) {
+            console.log('Finished in ' + event.elapsedTime + ' seconds.');
+            };
+
+            speechSynthesis.speak(msg);
+        </script>
+-->
 </table>
