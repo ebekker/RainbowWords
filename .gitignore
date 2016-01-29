@@ -25,7 +25,10 @@ build/Release
 
 # Dependency directory
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
-node_modules
+
+#BEK:  this has been commented out so that we can
+#      commit to GitHub and host the site using GHPages
+#node_modules
 
 # =========================
 # Operating System Files

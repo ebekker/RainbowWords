@@ -11,7 +11,7 @@ import {WordsService} from './words.service';
     providers: [WordsService],
 })
 export class AppComponent implements OnInit {
-    public title = 'Abby\'s Rainbow Words';
+    public title = 'Abby\'s';
     public wordGroups: GroupedWords;
     public words: Word[];
     public wordIndex = -1;
