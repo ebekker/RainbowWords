@@ -16,8 +16,13 @@ export class AppComponent implements OnInit {
     public words: Word[];
     public wordIndex = -1;
     public currentWord: string;
+    public currentColor: string;
     public hasPrev = false;
     public hasNext = false;
+    
+    public optionRandomize = false;
+    public optionHideColor = false;
+    public optionRepeat = false;
     
     constructor(private _wordsService: WordsService) { }
     
@@ -29,6 +34,7 @@ export class AppComponent implements OnInit {
         this._wordsService.getWordGroups().then(_ => {
             this.wordGroups = _;
             this.convertWordGroups(this.wordGroups);
+            this.wordIndex = 0;
             this.refreshState();
         });
     }
@@ -51,6 +57,7 @@ export class AppComponent implements OnInit {
         this.hasNext = this.words
                 && this.wordIndex < (this.words.length - 1);
         this.currentWord = this.words[this.wordIndex].word;
+        this.currentColor = this.words[this.wordIndex].color;
     }
     
     onPrev() {
