@@ -86,6 +86,20 @@ export class AppComponent implements OnInit {
         this.currentColor = this.words[this.wordIndex].color;
     }
     
+    onFirst() {
+        if (this.hasPrev) {
+            this.wordIndex = 0;
+            this.refreshState();
+        }
+    }
+    
+    onLast() {
+        if (this.hasNext) {
+            this.wordIndex = this.words.length - 1;
+            this.refreshState();
+        }
+    }
+    
     onPrev() {
         if (this.hasPrev) {
             --this.wordIndex;
@@ -96,6 +110,27 @@ export class AppComponent implements OnInit {
     onNext() {
         if (this.hasNext) {
             ++this.wordIndex;
+            this.refreshState();
+        }
+    }
+
+    onPrevColor() {
+        if (this.hasPrev) {
+            var thisColor = this.currentColor;
+            while (this.wordIndex > 0 && thisColor == this.words[this.wordIndex].color) {
+                --this.wordIndex;
+            }
+            this.refreshState();
+        }
+    }
+
+    onNextColor() {
+        if (this.hasNext) {
+            var thisColor = this.currentColor;
+            var maxIndex = this.words.length - 1;
+            while (this.wordIndex < maxIndex && thisColor == this.words[this.wordIndex].color) {
+                ++this.wordIndex;
+            }
             this.refreshState();
         }
     }

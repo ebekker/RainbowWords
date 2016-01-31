@@ -74,6 +74,18 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                     this.currentWord = this.words[this.wordIndex].word;
                     this.currentColor = this.words[this.wordIndex].color;
                 };
+                AppComponent.prototype.onFirst = function () {
+                    if (this.hasPrev) {
+                        this.wordIndex = 0;
+                        this.refreshState();
+                    }
+                };
+                AppComponent.prototype.onLast = function () {
+                    if (this.hasNext) {
+                        this.wordIndex = this.words.length - 1;
+                        this.refreshState();
+                    }
+                };
                 AppComponent.prototype.onPrev = function () {
                     if (this.hasPrev) {
                         --this.wordIndex;
@@ -83,6 +95,25 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                 AppComponent.prototype.onNext = function () {
                     if (this.hasNext) {
                         ++this.wordIndex;
+                        this.refreshState();
+                    }
+                };
+                AppComponent.prototype.onPrevColor = function () {
+                    if (this.hasPrev) {
+                        var thisColor = this.currentColor;
+                        while (this.wordIndex > 0 && thisColor == this.words[this.wordIndex].color) {
+                            --this.wordIndex;
+                        }
+                        this.refreshState();
+                    }
+                };
+                AppComponent.prototype.onNextColor = function () {
+                    if (this.hasNext) {
+                        var thisColor = this.currentColor;
+                        var maxIndex = this.words.length - 1;
+                        while (this.wordIndex < maxIndex && thisColor == this.words[this.wordIndex].color) {
+                            ++this.wordIndex;
+                        }
                         this.refreshState();
                     }
                 };

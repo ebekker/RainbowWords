@@ -55,6 +55,28 @@
             </paper-button>
         </td>
     </tr>
+    <tr>
+        <td colspan="1" class="buttonCell">
+            <paper-button raised (click)="onFirst()" [disabled]="!hasPrev">
+                <iron-icon icon="av:skip-previous"></iron-icon>
+            </paper-button>
+        </td>
+        <td colspan="1" class="buttonCell">
+            <paper-button raised (click)="onPrevColor()" [disabled]="!hasPrev">
+                <iron-icon icon="av:fast-rewind"></iron-icon>
+            </paper-button>
+        </td>
+        <td colspan="1" class="buttonCell">
+            <paper-button raised (click)="onNextColor()" [disabled]="!hasNext">
+                <iron-icon icon="av:fast-forward"></iron-icon>
+            </paper-button>
+        </td>
+        <td colspan="1" class="buttonCell">
+            <paper-button raised (click)="onLast()" [disabled]="!hasNext">
+                <iron-icon icon="av:skip-next"></iron-icon>
+            </paper-button>
+        </td>
+    </tr>
 
 <!--
         <script>
