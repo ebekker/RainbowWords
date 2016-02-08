@@ -8,12 +8,13 @@ System.register(['angular2/core', 'angular2/http', './mock-words', 'rxjs/Observa
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, http_1, mock_words_1, Observable_1;
-    var DEFAULT_WORDS_SOURCE, WordsService;
+    var core_1, core_2, http_1, mock_words_1, Observable_1;
+    var DEFAULT_WORDS_SOURCE, WordsService, ActiveWordGroupPipe;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
+                core_2 = core_1_1;
             },
             function (http_1_1) {
                 http_1 = http_1_1;
@@ -48,12 +49,28 @@ System.register(['angular2/core', 'angular2/http', './mock-words', 'rxjs/Observa
                     return Observable_1.Observable.throw(err);
                 };
                 WordsService = __decorate([
-                    core_1.Injectable(), 
+                    core_2.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])
                 ], WordsService);
                 return WordsService;
             })();
             exports_1("WordsService", WordsService);
+            ActiveWordGroupPipe = (function () {
+                function ActiveWordGroupPipe() {
+                }
+                ActiveWordGroupPipe.prototype.transform = function (items, args) {
+                    return items.filter(function (wg) { return !wg.disabled; });
+                };
+                ActiveWordGroupPipe = __decorate([
+                    core_1.Pipe({
+                        name: "activeWordGroup"
+                    }),
+                    core_2.Injectable(), 
+                    __metadata('design:paramtypes', [])
+                ], ActiveWordGroupPipe);
+                return ActiveWordGroupPipe;
+            })();
+            exports_1("ActiveWordGroupPipe", ActiveWordGroupPipe);
         }
     }
 });

@@ -1,3 +1,4 @@
+import {Pipe,PipeTransform}     from 'angular2/core';
 import {Injectable}             from 'angular2/core';
 import {Http}                   from 'angular2/http';
 import {WordGroup,GroupedWords} from './words';
@@ -31,5 +32,15 @@ export class WordsService {
     logAndThrow(err: Error) {
         console.error(err);
         return Observable.throw(err);
+    }
+}
+
+@Pipe({
+    name: "activeWordGroup"
+})
+@Injectable()
+export class ActiveWordGroupPipe implements PipeTransform {
+    transform(items: WordGroup[], args: any[]): any {
+        return items.filter(wg => !wg.disabled);
     }
 }
