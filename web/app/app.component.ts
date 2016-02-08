@@ -1,5 +1,8 @@
 import {Component}                   from 'angular2/core';
 import {OnInit}                      from 'angular2/core';
+import {Output,EventEmitter}         from 'angular2/core';
+import {Input}                       from 'angular2/core';
+import {ChangeDetectorRef}           from 'angular2/core';
 import {HTTP_PROVIDERS}              from 'angular2/http';
 import {GroupedWords,WordGroup,Word} from './words';
 import {WordsService}                from './words.service';
@@ -14,6 +17,7 @@ import {ActiveWordGroupPipe}         from './words.service';
         HTTP_PROVIDERS,
         WordsService
     ],
+    events: ['speechRecogStarted','speechRecogEnded'],
     pipes: [ActiveWordGroupPipe]
 })
 export class AppComponent implements OnInit {
@@ -25,15 +29,27 @@ export class AppComponent implements OnInit {
     public currentColor: string;
     public hasPrev = false;
     public hasNext = false;
+    @Input() showGoodJob = false;
+    @Input() showSorryWrong = false;
+    @Input() showSorryError = false;
     
     public optionRandomize = false;
     public optionHideColor = false;
     public optionRepeat = false;
     
+    public isTalking = false;
+    @Input() recognizedWord: string;
     public voices: SpeechSynthesisVoice[];
     public speech: SpeechSynthesisUtterance;
+    public recog: webkitSpeechRecognition;
     
-    constructor(private _wordsService: WordsService) { }
+    @Output() public speechRecogStarted: EventEmitter<any> = new EventEmitter();
+    @Output() public speechRecogEnded: EventEmitter<any> = new EventEmitter();
+    
+    private _talkStart = new Audio('/aud/siri2.mp3');
+    private _talkStop = new Audio('/aud/siri3.mp3');
+    
+    constructor(private _wordsService: WordsService, private _cdRef: ChangeDetectorRef) { }
     
     ngOnInit() {
         this.loadWords();
@@ -42,6 +58,8 @@ export class AppComponent implements OnInit {
         // down below on first access of the Web Speech API
         // TODO:  find out why this isn't working!!!
         this.initHear();
+        
+        this.initTalk();
     }
     
     loadWords() {
@@ -98,6 +116,9 @@ export class AppComponent implements OnInit {
     }
     
     refreshState() {
+        this.showGoodJob = false;
+        this.showSorryWrong = false;
+        this.showSorryError = false;
         this.hasPrev = this.words
                 && this.wordIndex > 0; 
         this.hasNext = this.words
@@ -187,8 +208,72 @@ export class AppComponent implements OnInit {
         this.speech.pitch = 1; //0 to 2
         this.speech.lang = 'en-US';
     }
+
+    initTalk() {
+        // From:
+        //    https://developers.google.com/web/updates/2013/01/Voice-Driven-Web-Apps-Introduction-to-the-Web-Speech-API
+        this.recog = new webkitSpeechRecognition();
+        this.recog.continuous = false;
+        this.recog.interimResults = false; // Set to true to get "early results" that may later change
+        this.recog.lang = "en-US";
+        this.recog.onstart = this.onSpeechRecogStart.bind(this);
+        this.recog.onresult = this.onSpeechRecogResult.bind(this);
+        this.recog.onerror = this.onSpeechRecogError.bind(this);
+        this.recog.onend = this.onSpeechRecogEnd.bind(this);
+    }
     
-    onHear() {
+    onSpeechRecogStart() {
+        console.info("This = " + this);
+        this.showGoodJob = false;
+        this.showSorryWrong = false;
+        this.showSorryError = false;
+        this.isTalking = true;
+        this.recognizedWord = ""
+        console.info("Speech Recog - starting...");
+        this._talkStart.play();
+        this.speechRecogStarted.next(null);
+    }
+    
+    onSpeechRecogResult(event: any) {
+        for (var i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+                this.recognizedWord = event.results[i][0].transcript;
+            }
+        }
+        console.info("Speech Recog - got word(s):  " + this.recognizedWord);
+    }
+    
+    onSpeechRecogError(event:any) {
+        this.showSorryError = true;
+        console.error("Speech Recog - got error!:  " + event);
+    }
+
+    onSpeechRecogEnd() {
+        this.isTalking = false;
+        console.info("Speech Recog - got final word(s):  " + this.recognizedWord);
+        this._talkStop.play();
+        if (!this.showSorryError) {
+            if (this.recognizedWord == this.currentWord) {
+                this.showGoodJob = true;
+            } else {
+                this.showSorryWrong = true;
+            }
+        }
+        this.speechRecogEnded.next(null);
+        this._cdRef.detectChanges();
+    }
+    
+    speak(text: string) {
+        // This is weird, to make this thing work right
+        // we have to initialize on *every* call
+        // TODO: find out why!!!
+        this.initHear();
+
+        this.speech.text = text;
+        window.speechSynthesis.speak(this.speech);
+    }
+    
+    onHearClick() {
         // var msg = new SpeechSynthesisUtterance(this.currentWord);
         // window.speechSynthesis.speak(msg);
         //
@@ -210,18 +295,12 @@ export class AppComponent implements OnInit {
         this.speak(this.currentWord);
     }
     
-    onTalk() {
-        
-    }
-    
-    speak(text: string) {
-
-        // This is weird, to make this thing work right
-        // we have to initialize on *every* call
-        // TODO: find out why!!!
-        this.initHear();
-
-        this.speech.text = text;
-        window.speechSynthesis.speak(this.speech);
+    onTalkClick() {
+        if (this.isTalking) {
+            this.recog.stop();
+        }
+        else {
+            this.recog.start();
+        }
     }
 }

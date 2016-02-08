@@ -54,18 +54,27 @@
         </td>
     </tr>
     <tr>
+        <td colspan="4" class="buttonCell">
+            &nbsp;
+            <span *ngIf="showGoodJob">Good Job!</span>
+            <span *ngIf="showSorryWrong">Sorry, I heard you say, "<b>{{recognizedWord}}</b>"</span>
+            <span *ngIf="showSorryError">Sorry, I coud not hear you</span>
+        </td>
+    </tr>
+    <tr>
         <td colspan="1" class="buttonCell prevButtonCell">
             <paper-button raised (click)="onPrev()" [disabled]="!hasPrev">
                 <iron-icon icon="icons:arrow-back"></iron-icon>
             </paper-button>
         </td>
         <td colspan="1" class="buttonCell hearButtonCell">
-            <paper-button raised (click)="onHear()" [disabled]="!currentWord">
+            <paper-button raised (click)="onHearClick()" [disabled]="!currentWord">
                 <iron-icon icon="av:hearing"></iron-icon>
             </paper-button>
         </td>
         <td colspan="1" class="buttonCell talkButtonCell">
-            <paper-button raised (click)="onTalk()" [disabled]="currentWord">
+            <paper-button raised (click)="onTalkClick()" [disabled]="!currentWord"
+                    [style.backgroundColor]="isTalking ? 'orange' : ''">
                 <iron-icon icon="av:mic"></iron-icon>
             </paper-button>
         </td>

@@ -8,12 +8,15 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, http_1, words_service_1, words_service_2;
+    var core_1, core_2, core_3, core_4, http_1, words_service_1, words_service_2;
     var AppComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
+                core_2 = core_1_1;
+                core_3 = core_1_1;
+                core_4 = core_1_1;
             },
             function (http_1_1) {
                 http_1 = http_1_1;
@@ -24,15 +27,24 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
             }],
         execute: function() {
             AppComponent = (function () {
-                function AppComponent(_wordsService) {
+                function AppComponent(_wordsService, _cdRef) {
                     this._wordsService = _wordsService;
+                    this._cdRef = _cdRef;
                     this.title = 'Abby\'s';
                     this.wordIndex = -1;
                     this.hasPrev = false;
                     this.hasNext = false;
+                    this.showGoodJob = false;
+                    this.showSorryWrong = false;
+                    this.showSorryError = false;
                     this.optionRandomize = false;
                     this.optionHideColor = false;
                     this.optionRepeat = false;
+                    this.isTalking = false;
+                    this.speechRecogStarted = new core_2.EventEmitter();
+                    this.speechRecogEnded = new core_2.EventEmitter();
+                    this._talkStart = new Audio('/aud/siri2.mp3');
+                    this._talkStop = new Audio('/aud/siri3.mp3');
                 }
                 AppComponent.prototype.ngOnInit = function () {
                     this.loadWords();
@@ -40,6 +52,7 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                     // down below on first access of the Web Speech API
                     // TODO:  find out why this isn't working!!!
                     this.initHear();
+                    this.initTalk();
                 };
                 AppComponent.prototype.loadWords = function () {
                     // When getWordGroups returned a promise
@@ -85,6 +98,9 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                     });
                 };
                 AppComponent.prototype.refreshState = function () {
+                    this.showGoodJob = false;
+                    this.showSorryWrong = false;
+                    this.showSorryError = false;
                     this.hasPrev = this.words
                         && this.wordIndex > 0;
                     this.hasNext = this.words
@@ -163,7 +179,65 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                     this.speech.pitch = 1; //0 to 2
                     this.speech.lang = 'en-US';
                 };
-                AppComponent.prototype.onHear = function () {
+                AppComponent.prototype.initTalk = function () {
+                    // From:
+                    //    https://developers.google.com/web/updates/2013/01/Voice-Driven-Web-Apps-Introduction-to-the-Web-Speech-API
+                    this.recog = new webkitSpeechRecognition();
+                    this.recog.continuous = false;
+                    this.recog.interimResults = false; // Set to true to get "early results" that may later change
+                    this.recog.lang = "en-US";
+                    this.recog.onstart = this.onSpeechRecogStart.bind(this);
+                    this.recog.onresult = this.onSpeechRecogResult.bind(this);
+                    this.recog.onerror = this.onSpeechRecogError.bind(this);
+                    this.recog.onend = this.onSpeechRecogEnd.bind(this);
+                };
+                AppComponent.prototype.onSpeechRecogStart = function () {
+                    console.info("This = " + this);
+                    this.showGoodJob = false;
+                    this.showSorryWrong = false;
+                    this.showSorryError = false;
+                    this.isTalking = true;
+                    this.recognizedWord = "";
+                    console.info("Speech Recog - starting...");
+                    this._talkStart.play();
+                    this.speechRecogStarted.next(null);
+                };
+                AppComponent.prototype.onSpeechRecogResult = function (event) {
+                    for (var i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            this.recognizedWord = event.results[i][0].transcript;
+                        }
+                    }
+                    console.info("Speech Recog - got word(s):  " + this.recognizedWord);
+                };
+                AppComponent.prototype.onSpeechRecogError = function (event) {
+                    this.showSorryError = true;
+                    console.error("Speech Recog - got error!:  " + event);
+                };
+                AppComponent.prototype.onSpeechRecogEnd = function () {
+                    this.isTalking = false;
+                    console.info("Speech Recog - got final word(s):  " + this.recognizedWord);
+                    this._talkStop.play();
+                    if (!this.showSorryError) {
+                        if (this.recognizedWord == this.currentWord) {
+                            this.showGoodJob = true;
+                        }
+                        else {
+                            this.showSorryWrong = true;
+                        }
+                    }
+                    this.speechRecogEnded.next(null);
+                    this._cdRef.detectChanges();
+                };
+                AppComponent.prototype.speak = function (text) {
+                    // This is weird, to make this thing work right
+                    // we have to initialize on *every* call
+                    // TODO: find out why!!!
+                    this.initHear();
+                    this.speech.text = text;
+                    window.speechSynthesis.speak(this.speech);
+                };
+                AppComponent.prototype.onHearClick = function () {
                     // var msg = new SpeechSynthesisUtterance(this.currentWord);
                     // window.speechSynthesis.speak(msg);
                     //
@@ -182,16 +256,38 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                     //speechSynthesis.speak(msg);
                     this.speak(this.currentWord);
                 };
-                AppComponent.prototype.onTalk = function () {
+                AppComponent.prototype.onTalkClick = function () {
+                    if (this.isTalking) {
+                        this.recog.stop();
+                    }
+                    else {
+                        this.recog.start();
+                    }
                 };
-                AppComponent.prototype.speak = function (text) {
-                    // This is weird, to make this thing work right
-                    // we have to initialize on *every* call
-                    // TODO: find out why!!!
-                    this.initHear();
-                    this.speech.text = text;
-                    window.speechSynthesis.speak(this.speech);
-                };
+                __decorate([
+                    core_3.Input(), 
+                    __metadata('design:type', Object)
+                ], AppComponent.prototype, "showGoodJob", void 0);
+                __decorate([
+                    core_3.Input(), 
+                    __metadata('design:type', Object)
+                ], AppComponent.prototype, "showSorryWrong", void 0);
+                __decorate([
+                    core_3.Input(), 
+                    __metadata('design:type', Object)
+                ], AppComponent.prototype, "showSorryError", void 0);
+                __decorate([
+                    core_3.Input(), 
+                    __metadata('design:type', String)
+                ], AppComponent.prototype, "recognizedWord", void 0);
+                __decorate([
+                    core_2.Output(), 
+                    __metadata('design:type', core_2.EventEmitter)
+                ], AppComponent.prototype, "speechRecogStarted", void 0);
+                __decorate([
+                    core_2.Output(), 
+                    __metadata('design:type', core_2.EventEmitter)
+                ], AppComponent.prototype, "speechRecogEnded", void 0);
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: 'my-app',
@@ -202,9 +298,10 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                             http_1.HTTP_PROVIDERS,
                             words_service_1.WordsService
                         ],
+                        events: ['speechRecogStarted', 'speechRecogEnded'],
                         pipes: [words_service_2.ActiveWordGroupPipe]
                     }), 
-                    __metadata('design:paramtypes', [words_service_1.WordsService])
+                    __metadata('design:paramtypes', [words_service_1.WordsService, core_4.ChangeDetectorRef])
                 ], AppComponent);
                 return AppComponent;
             })();
