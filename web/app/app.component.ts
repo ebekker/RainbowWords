@@ -46,8 +46,8 @@ export class AppComponent implements OnInit {
     @Output() public speechRecogStarted: EventEmitter<any> = new EventEmitter();
     @Output() public speechRecogEnded: EventEmitter<any> = new EventEmitter();
     
-    private _talkStart = new Audio('/aud/siri2.mp3');
-    private _talkStop = new Audio('/aud/siri3.mp3');
+    private _talkStart = new Audio('aud/siri2.mp3');
+    private _talkStop = new Audio('aud/siri3.mp3');
     
     constructor(private _wordsService: WordsService, private _cdRef: ChangeDetectorRef) { }
     

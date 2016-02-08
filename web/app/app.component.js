@@ -43,8 +43,8 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                     this.isTalking = false;
                     this.speechRecogStarted = new core_2.EventEmitter();
                     this.speechRecogEnded = new core_2.EventEmitter();
-                    this._talkStart = new Audio('/aud/siri2.mp3');
-                    this._talkStop = new Audio('/aud/siri3.mp3');
+                    this._talkStart = new Audio('aud/siri2.mp3');
+                    this._talkStop = new Audio('aud/siri3.mp3');
                 }
                 AppComponent.prototype.ngOnInit = function () {
                     this.loadWords();
