@@ -76,7 +76,7 @@ export class AppComponent implements OnInit {
         this.refreshState();
     }
     
-    reloadGroupedWords(random: boolean) {
+    reloadGroupedWords(random?: boolean) {
         this.optionRandomize = random;
         this.loadGroupedWords(this.wordGroups);
     }
