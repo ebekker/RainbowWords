@@ -1,10 +1,14 @@
+<!--
+    In the future we may re-org some things under an options menu
 <div style="float: right">
 <iron-icon icon="menu"></iron-icon>
 </div>
+-->
+
 <h3 style="font-family: Muli; background-color: #eee;">
     {{title}}
     <b>
-        <span style="color: red;"   >R</span
+        <span  style="color: red;"   >R</span
         ><span style="color: orange;">A</span
         ><span style="color: gold;"  >I</span
         ><span style="color: green;" >N</span
@@ -29,7 +33,23 @@
 
 <table width="100%" [hidden]="!words">
     <tr>
-        <td colspan="4" width="100%" class="theWordCell" [style.backgroundColor]="currentColor">
+        <td colspan="4">
+            <table [hidden]="optionHideColor" width="100%" style="width: 100%">
+                <tr *ngIf="wordGroups">
+                    <td *ngFor="#wg of wordGroups.wordGroups|activeWordGroup, #wgIndex=index"
+                            width="1*"
+                            [style.backgroundColor]="wg.color"
+                            [style.height.px]="30"
+                            [class.colorGroup]="currentColor!=wg.color"
+                            [class.colorGroupSelected]="currentColor==wg.color"
+                            (click)="onColorClick(wgIndex)">&nbsp;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" width="100%" class="theWordCell"
+                [style.backgroundColor]="optionHideColor ? '' : currentColor">
             <h1 class="theWord">{{currentWord}}</h1>
         </td>
     </tr>
@@ -75,6 +95,16 @@
             <paper-button raised (click)="onLast()" [disabled]="!hasNext">
                 <iron-icon icon="av:skip-next"></iron-icon>
             </paper-button>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align: center; padding: 15px;">
+            <paper-checkbox [checked]="optionHideColor"
+                    (click)="optionHideColor=!optionHideColor">Hide Color</paper-checkbox>
+        </td>
+        <td colspan="2" style="text-align: center; padding: 15px;">
+            <paper-checkbox [checked]="optionRandomize"
+                    (click)="onRandomize(!optionRandomize)">Randomize</paper-checkbox>
         </td>
     </tr>
 

@@ -5,6 +5,12 @@
     font-style: italic;
     font-size: 10vw;
 }
+.colorGroup {
+    border: solid 1px #eee;
+}
+.colorGroupSelected {
+    border: solid 1px black;
+}
 .theWord {
     /** Web Font that's close to 'grade school' **/
     font-family: 'Questrial', sans-serif;
@@ -18,6 +24,9 @@
 }
 .theWordCell {
     text-align: center;
+    border: solid 1px black;
+    border-top-color: #ccc;
+    border-left-color: #ccc;
 }
 
 .buttonCell {

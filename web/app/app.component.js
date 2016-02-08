@@ -8,7 +8,7 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, http_1, words_service_1;
+    var core_1, http_1, words_service_1, words_service_2;
     var AppComponent;
     return {
         setters:[
@@ -20,6 +20,7 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
             },
             function (words_service_1_1) {
                 words_service_1 = words_service_1_1;
+                words_service_2 = words_service_1_1;
             }],
         execute: function() {
             AppComponent = (function () {
@@ -55,16 +56,33 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                 AppComponent.prototype.loadGroupedWords = function (gw) {
                     this.wordGroups = gw;
                     this.convertWordGroups(this.wordGroups);
+                    if (this.optionRandomize) {
+                        for (var i = 0; i < this.words.length; ++i) {
+                            var rnd = Math.random();
+                            var swp = Math.floor(rnd * this.words.length);
+                            var tmp = this.words[i];
+                            this.words[i] = this.words[swp];
+                            this.words[swp] = tmp;
+                        }
+                    }
                     this.wordIndex = 0;
                     this.refreshState();
+                };
+                AppComponent.prototype.reloadGroupedWords = function (random) {
+                    this.optionRandomize = random;
+                    this.loadGroupedWords(this.wordGroups);
                 };
                 AppComponent.prototype.convertWordGroups = function (groupedWords) {
                     var _this = this;
                     this.words = [];
-                    groupedWords.wordGroups.forEach(function (_) { return _.words.forEach(function (_2) { return _this.words = _this.words.concat({
-                        word: _2,
-                        color: _.color
-                    }); }); });
+                    groupedWords.wordGroups.forEach(function (_) {
+                        if (!_.disabled) {
+                            _.words.forEach(function (_2) { return _this.words = _this.words.concat({
+                                word: _2,
+                                color: _.color
+                            }); });
+                        }
+                    });
                 };
                 AppComponent.prototype.refreshState = function () {
                     this.hasPrev = this.words
@@ -72,7 +90,23 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                     this.hasNext = this.words
                         && this.wordIndex < (this.words.length - 1);
                     this.currentWord = this.words[this.wordIndex].word;
-                    this.currentColor = this.words[this.wordIndex].color;
+                    if (this.optionHideColor) {
+                        this.currentColor = "";
+                    }
+                    else {
+                        this.currentColor = this.words[this.wordIndex].color;
+                    }
+                };
+                AppComponent.prototype.onColorClick = function (wgIndex) {
+                    // Cycle through all of our word/color pairs and find the first
+                    // one that has the same color as the indicated wordGroup color
+                    for (var i = 0; i < this.words.length; ++i) {
+                        if (this.words[i].color == this.wordGroups.wordGroups[wgIndex].color) {
+                            this.wordIndex = i;
+                            this.refreshState();
+                            break;
+                        }
+                    }
                 };
                 AppComponent.prototype.onFirst = function () {
                     if (this.hasPrev) {
@@ -168,6 +202,7 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                             http_1.HTTP_PROVIDERS,
                             words_service_1.WordsService
                         ],
+                        pipes: [words_service_2.ActiveWordGroupPipe]
                     }), 
                     __metadata('design:paramtypes', [words_service_1.WordsService])
                 ], AppComponent);

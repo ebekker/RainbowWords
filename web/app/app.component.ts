@@ -3,6 +3,7 @@ import {OnInit}                      from 'angular2/core';
 import {HTTP_PROVIDERS}              from 'angular2/http';
 import {GroupedWords,WordGroup,Word} from './words';
 import {WordsService}                from './words.service';
+import {ActiveWordGroupPipe}         from './words.service';
 
 @Component({
     selector: 'my-app',
@@ -13,6 +14,7 @@ import {WordsService}                from './words.service';
         HTTP_PROVIDERS,
         WordsService
     ],
+    pipes: [ActiveWordGroupPipe]
 })
 export class AppComponent implements OnInit {
     public title = 'Abby\'s';
@@ -61,19 +63,37 @@ export class AppComponent implements OnInit {
     loadGroupedWords(gw: GroupedWords) {
         this.wordGroups = gw;
         this.convertWordGroups(this.wordGroups);
+        if (this.optionRandomize) {
+            for (var i = 0; i < this.words.length; ++i) {
+                var rnd = Math.random();
+                var swp = Math.floor(rnd * this.words.length)
+                var tmp = this.words[i];
+                this.words[i] = this.words[swp];
+                this.words[swp] = tmp;
+            }
+        }
         this.wordIndex = 0;
         this.refreshState();
+    }
+    
+    reloadGroupedWords(random: boolean) {
+        this.optionRandomize = random;
+        this.loadGroupedWords(this.wordGroups);
     }
     
     convertWordGroups(groupedWords: GroupedWords) {
         this.words = [];
         groupedWords.wordGroups.forEach(
-            _ => _.words.forEach(
-                _2 => this.words = this.words.concat({
-                    word: _2,
-                    color: _.color
-                })
-            )
+            _ => {
+                if (!_.disabled) {
+                    _.words.forEach(
+                        _2 => this.words = this.words.concat({
+                            word: _2,
+                            color: _.color
+                        })
+                    )
+                }
+            }
         );
     }
     
@@ -83,7 +103,25 @@ export class AppComponent implements OnInit {
         this.hasNext = this.words
                 && this.wordIndex < (this.words.length - 1);
         this.currentWord = this.words[this.wordIndex].word;
-        this.currentColor = this.words[this.wordIndex].color;
+
+        if (this.optionHideColor) {
+            this.currentColor = "";
+        }
+        else {
+            this.currentColor = this.words[this.wordIndex].color;
+        }
+    }
+    
+    onColorClick(wgIndex:number) {
+        // Cycle through all of our word/color pairs and find the first
+        // one that has the same color as the indicated wordGroup color
+        for (var i = 0; i < this.words.length; ++i) {
+            if (this.words[i].color == this.wordGroups.wordGroups[wgIndex].color) {
+                this.wordIndex = i;
+                this.refreshState();
+                break;
+            }
+        }
     }
     
     onFirst() {
