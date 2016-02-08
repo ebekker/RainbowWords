@@ -24,7 +24,8 @@
     "paper-input": "PolymerElements/paper-input#1.0.0",
     "iron-iconset-svg": "PolymerElements/iron-iconset-svg#1.0.0",
     "iron-input": "PolymerElements/iron-input#1.0.0",
-    "paper-card": "PolymerElements/paper-card#1.0.0"
+    "paper-card": "PolymerElements/paper-card#1.0.0",
+    "paper-checkbox": "PolymerElements/paper-checkbox#1.0.0"
   },
   "resolutions": {
     "polymer": "^1.2.1"
