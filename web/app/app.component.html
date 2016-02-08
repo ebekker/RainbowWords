@@ -98,13 +98,18 @@
         </td>
     </tr>
     <tr>
-        <td colspan="2" style="text-align: center; padding: 15px;">
+        <td colspan="2" class="buttonCell">
             <paper-checkbox [checked]="optionHideColor"
                     (click)="optionHideColor=!optionHideColor">Hide Color</paper-checkbox>
         </td>
-        <td colspan="2" style="text-align: center; padding: 15px;">
+        <td colspan="2" class="buttonCell">
             <paper-checkbox [checked]="optionRandomize"
                     (click)="reloadGroupedWords(!optionRandomize)">Randomize</paper-checkbox>
+        </td>
+    </tr>
+    <tr>
+        <td *ngIf="words" colspan="4" class="buttonCell wordIndex">
+            {{wordIndex + 1}}/{{words.length}}
         </td>
     </tr>
 
