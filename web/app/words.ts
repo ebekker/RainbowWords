@@ -5,6 +5,7 @@ export interface WordGroup {
 }
 export interface GroupedWords {
     wordGroups: WordGroup[];
+    synonyms: string[][];
 }
 
 export interface Word {

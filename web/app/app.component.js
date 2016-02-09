@@ -219,11 +219,42 @@ System.register(['angular2/core', 'angular2/http', './words.service'], function(
                     console.info("Speech Recog - got final word(s):  " + this.recognizedWord);
                     this._talkStop.play();
                     if (!this.showSorryError) {
-                        if (this.recognizedWord == this.currentWord) {
+                        var lcCurrWord = this.currentWord.toLowerCase();
+                        var lcRecogWord = this.recognizedWord.toLowerCase();
+                        if (lcCurrWord == lcRecogWord) {
                             this.showGoodJob = true;
                         }
                         else {
-                            this.showSorryWrong = true;
+                            // See if the words are synonyms
+                            var areSyns = false;
+                            if (this.wordGroups.synonyms) {
+                                for (var i = 0; i < this.wordGroups.synonyms.length; ++i) {
+                                    var syns = this.wordGroups.synonyms[i];
+                                    for (var j = 0; j < syns.length; ++j) {
+                                        if (syns[j].toLowerCase() == lcCurrWord) {
+                                            for (var k = 0; k < syns.length; ++k) {
+                                                if (syns[k].toLowerCase() == lcRecogWord) {
+                                                    areSyns = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (areSyns) {
+                                            break;
+                                        }
+                                    }
+                                    if (areSyns) {
+                                        break;
+                                    }
+                                }
+                            }
+                            if (areSyns) {
+                                this.showGoodJob = true;
+                                console.info("Synonyms!");
+                            }
+                            else {
+                                this.showSorryWrong = true;
+                            }
                         }
                     }
                     this.speechRecogEnded.next(null);
